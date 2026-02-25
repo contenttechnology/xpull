@@ -119,12 +119,43 @@ function sleep(ms: number) {
 }
 
 /**
+ * Parse a "since" value into an ISO 8601 timestamp.
+ * Accepts: "1h", "6h", "2d", "7d", or an ISO date/datetime string.
+ */
+export function parseSince(since: string): string {
+  // Shorthand: 30m, 6h, 2d
+  const match = since.match(/^(\d+)(m|h|d)$/);
+  if (match) {
+    const num = parseInt(match[1]);
+    const unit = match[2];
+    const ms =
+      unit === "m" ? num * 60_000 :
+      unit === "h" ? num * 3_600_000 :
+      num * 86_400_000;
+    return new Date(Date.now() - ms).toISOString();
+  }
+
+  // Date only: 2026-02-24 → start of that day UTC
+  if (/^\d{4}-\d{2}-\d{2}$/.test(since)) {
+    return new Date(since + "T00:00:00Z").toISOString();
+  }
+
+  // Already ISO 8601
+  const parsed = new Date(since);
+  if (isNaN(parsed.getTime())) {
+    throw new Error(`Invalid --since value: "${since}". Use e.g. 2h, 3d, or 2026-02-24T14:00:00Z`);
+  }
+  return parsed.toISOString();
+}
+
+/**
  * Pull home timeline (reverse chronological).
  */
 export async function homeTimeline(opts: {
   limit?: number;
   excludeRetweets?: boolean;
   excludeReplies?: boolean;
+  since?: string;
 } = {}): Promise<Tweet[]> {
   const { accessToken, userId } = await getAuth();
   const limit = opts.limit || 20;
@@ -138,12 +169,18 @@ export async function homeTimeline(opts: {
   if (opts.excludeReplies) exclude.push("replies");
   const excludeParam = exclude.length > 0 ? `&exclude=${exclude.join(",")}` : "";
 
+  let sinceParam = "";
+  if (opts.since) {
+    const startTime = parseSince(opts.since);
+    sinceParam = `&start_time=${startTime}`;
+  }
+
   let allTweets: Tweet[] = [];
   let nextToken: string | undefined;
 
   for (let page = 0; page < pages; page++) {
     const pagination = nextToken ? `&pagination_token=${nextToken}` : "";
-    const url = `${BASE}/users/${userId}/timelines/reverse_chronological?max_results=${perPage}&${TWEET_FIELDS}${excludeParam}${pagination}`;
+    const url = `${BASE}/users/${userId}/timelines/reverse_chronological?max_results=${perPage}&${TWEET_FIELDS}${excludeParam}${sinceParam}${pagination}`;
 
     const raw = await apiGet(url, accessToken);
     const tweets = parseTweets(raw);

@@ -55,6 +55,7 @@ async function cmdAuth() {
 
 async function cmdFeed() {
   const limit = parseInt(getOpt("limit") || "20");
+  const since = getOpt("since");
   const excludeRetweets = getFlag("exclude-retweets");
   const excludeReplies = getFlag("exclude-replies");
   const asJson = getFlag("json");
@@ -63,6 +64,7 @@ async function cmdFeed() {
     limit,
     excludeRetweets,
     excludeReplies,
+    since,
   });
 
   if (tweets.length === 0) {
@@ -70,10 +72,13 @@ async function cmdFeed() {
     return;
   }
 
+  let header = "Home Timeline";
+  if (since) header += ` (since ${since})`;
+
   if (asJson) {
     console.log(JSON.stringify(tweets, null, 2));
   } else {
-    console.log(fmt.formatResults(tweets, { header: "Home Timeline", limit }));
+    console.log(fmt.formatResults(tweets, { header, limit }));
   }
 }
 
@@ -131,6 +136,7 @@ Commands:
 
 Feed options:
   --limit N              Max tweets to fetch (default: 20)
+  --since <time>         Only tweets after this time (e.g. 2h, 3d, 2026-02-24, 2026-02-24T14:00:00Z)
   --exclude-retweets     Exclude retweets
   --exclude-replies      Exclude replies
   --json                 Raw JSON output
