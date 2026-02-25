@@ -1,0 +1,11 @@
+{
+  "name": "xpull",
+  "version": "1.0.0",
+  "description": "Pull tweets from X home timeline and lists via OAuth 2.0 PKCE",
+  "scripts": {
+    "start": "bun run xpull.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
