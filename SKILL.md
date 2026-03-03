@@ -19,21 +19,21 @@ Pull tweets from your X home timeline (following feed) and from X Lists.
 Requires OAuth 2.0 user-context authentication (app-only bearer tokens won't work for home timeline).
 
 1. Set `X_CLIENT_ID` env var (from [X Developer Portal](https://developer.x.com/en/portal/dashboard))
-2. Run auth: `bun run xpull.ts auth`
+2. Run auth: `bun run scripts/xpull.ts auth`
 
 ## CLI
 
-All commands run from this skill directory:
+All commands run from the skill directory (where this SKILL.md lives):
 
 ```bash
-cd /Users/adambarker/Development/cc/xpull
+cd "$(dirname "$SKILL_PATH")"
 source ~/.config/env/global.env
 ```
 
 ### Auth
 
 ```bash
-bun run xpull.ts auth
+bun run scripts/xpull.ts auth
 ```
 
 Runs OAuth 2.0 PKCE flow — opens browser, user approves, tokens stored locally. Tokens auto-refresh (2hr expiry).
@@ -41,7 +41,7 @@ Runs OAuth 2.0 PKCE flow — opens browser, user approves, tokens stored locally
 ### Feed (Home Timeline)
 
 ```bash
-bun run xpull.ts feed [--limit N] [--exclude-retweets] [--exclude-replies] [--json]
+bun run scripts/xpull.ts feed [--limit N] [--exclude-retweets] [--exclude-replies] [--json]
 ```
 
 Pulls tweets from the authenticated user's home timeline (reverse chronological).
@@ -50,7 +50,7 @@ Default: 20 tweets.
 ### List Tweets
 
 ```bash
-bun run xpull.ts list <id_or_name> [--limit N] [--json]
+bun run scripts/xpull.ts list <id_or_name> [--limit N] [--json]
 ```
 
 Pulls tweets from a specific list. Accepts numeric list ID or list name (matched against owned lists).
@@ -59,7 +59,7 @@ Default: 25 tweets.
 ### Show Owned Lists
 
 ```bash
-bun run xpull.ts lists
+bun run scripts/xpull.ts lists
 ```
 
 Shows all lists owned by the authenticated user with IDs, names, and member counts.
@@ -68,22 +68,22 @@ Shows all lists owned by the authenticated user with IDs, names, and member coun
 
 **Quick feed check:**
 ```bash
-bun run xpull.ts feed --limit 10
+bun run scripts/xpull.ts feed --limit 10
 ```
 
 **Feed without noise:**
 ```bash
-bun run xpull.ts feed --limit 30 --exclude-retweets --exclude-replies
+bun run scripts/xpull.ts feed --limit 30 --exclude-retweets --exclude-replies
 ```
 
 **Pull from a list by name:**
 ```bash
-bun run xpull.ts list "AI Builders" --limit 20
+bun run scripts/xpull.ts list "AI Builders" --limit 20
 ```
 
 **JSON for further processing:**
 ```bash
-bun run xpull.ts feed --limit 5 --json
+bun run scripts/xpull.ts feed --limit 5 --json
 ```
 
 ## File Structure
@@ -91,7 +91,8 @@ bun run xpull.ts feed --limit 5 --json
 ```
 xpull/
 ├── SKILL.md           (this file)
-├── xpull.ts           (CLI entry point)
+├── scripts/
+│   └── xpull.ts       (CLI entry point)
 ├── lib/
 │   ├── auth.ts        (OAuth 2.0 PKCE flow, token storage/refresh)
 │   ├── api.ts         (X API: home timeline, list tweets, owned lists)
