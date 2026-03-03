@@ -27,7 +27,6 @@ All commands run from the skill directory (where this SKILL.md lives):
 
 ```bash
 cd "$(dirname "$SKILL_PATH")"
-source ~/.config/env/global.env
 ```
 
 ### Auth

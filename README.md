@@ -12,37 +12,34 @@ Also works as a [Claude Code](https://docs.anthropic.com/en/docs/claude-code) sk
 
 ## Setup
 
-1. Set your client ID:
-   ```bash
-   export X_CLIENT_ID="your_client_id"
-   ```
+1. Ensure `X_CLIENT_ID` is set as an environment variable (from [X Developer Portal](https://developer.x.com/en/portal/dashboard)).
 
 2. Authorize with X:
    ```bash
-   bun run xpull.ts auth
+   bun run scripts/xpull.ts auth
    ```
-   This opens a browser for OAuth approval. Tokens are stored locally in `data/tokens.json` and auto-refresh on expiry.
+   This opens a browser for OAuth approval. Tokens are saved to the `data/` folder within the skill directory (created automatically if it doesn't exist) and auto-refresh on expiry.
 
 ## Usage
 
 ```bash
 # Pull your home timeline (default: 20 tweets)
-bun run xpull.ts feed
+bun run scripts/xpull.ts feed
 
 # Recent tweets only
-bun run xpull.ts feed --since 2h
+bun run scripts/xpull.ts feed --since 2h
 
 # Filter out noise
-bun run xpull.ts feed --limit 30 --exclude-retweets --exclude-replies
+bun run scripts/xpull.ts feed --limit 30 --exclude-retweets --exclude-replies
 
 # Pull tweets from a list (by name or ID)
-bun run xpull.ts list "AI Builders" --limit 20
+bun run scripts/xpull.ts list "AI Builders" --limit 20
 
 # Show your owned lists
-bun run xpull.ts lists
+bun run scripts/xpull.ts lists
 
 # JSON output for further processing
-bun run xpull.ts feed --json
+bun run scripts/xpull.ts feed --json
 ```
 
 ### Commands
@@ -79,13 +76,14 @@ To install as a Claude Code skill:
 ./install.sh
 ```
 
-This symlinks the project into `~/.claude/skills/xpull`. You can then invoke it in Claude Code with `/xpull`.
+This copies the skill files into `~/.claude/skills/xpull`. You can then invoke it in Claude Code with `/xpull`.
 
 ## Project Structure
 
 ```
 xpull/
-├── xpull.ts              CLI entry point
+├── scripts/
+│   └── xpull.ts          CLI entry point
 ├── lib/
 │   ├── auth.ts           OAuth 2.0 PKCE flow & token management
 │   ├── api.ts            X API v2 client (timelines, lists)
