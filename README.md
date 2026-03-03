@@ -83,11 +83,11 @@ This copies the skill files into `~/.claude/skills/xpull`. You can then invoke i
 ```
 xpull/
 ├── scripts/
-│   └── xpull.ts          CLI entry point
-├── lib/
-│   ├── auth.ts           OAuth 2.0 PKCE flow & token management
-│   ├── api.ts            X API v2 client (timelines, lists)
-│   └── format.ts         Terminal output formatting
+│   ├── xpull.ts          CLI entry point
+│   └── lib/
+│       ├── auth.ts       OAuth 2.0 PKCE flow & token management
+│       ├── api.ts        X API v2 client (timelines, lists)
+│       └── format.ts     Terminal output formatting
 ├── data/
 │   └── tokens.json       OAuth tokens (gitignored, created at runtime)
 ├── SKILL.md              Claude Code skill definition

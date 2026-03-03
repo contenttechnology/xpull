@@ -10,7 +10,6 @@ echo "Copying skill files to $TARGET..."
 cp "$SKILL_DIR/SKILL.md" "$TARGET/"
 cp "$SKILL_DIR/package.json" "$TARGET/"
 cp -r "$SKILL_DIR/scripts" "$TARGET/"
-cp -r "$SKILL_DIR/lib" "$TARGET/"
 mkdir -p "$TARGET/data"
 
 echo "Installing dependencies..."

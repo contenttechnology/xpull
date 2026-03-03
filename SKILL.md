@@ -91,11 +91,11 @@ bun run scripts/xpull.ts feed --limit 5 --json
 xpull/
 ├── SKILL.md           (this file)
 ├── scripts/
-│   └── xpull.ts       (CLI entry point)
-├── lib/
-│   ├── auth.ts        (OAuth 2.0 PKCE flow, token storage/refresh)
-│   ├── api.ts         (X API: home timeline, list tweets, owned lists)
-│   └── format.ts      (output formatting)
+│   ├── xpull.ts       (CLI entry point)
+│   └── lib/
+│       ├── auth.ts    (OAuth 2.0 PKCE flow, token storage/refresh)
+│       ├── api.ts     (X API: home timeline, list tweets, owned lists)
+│       └── format.ts  (output formatting)
 ├── data/
 │   └── tokens.json    (created at runtime, gitignored)
 └── package.json

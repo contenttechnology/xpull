@@ -9,11 +9,11 @@
  * - Auto-refreshes before expiry
  */
 
-import { readFileSync, writeFileSync, existsSync } from "fs";
-import { join } from "path";
+import { readFileSync, writeFileSync, existsSync, mkdirSync } from "fs";
+import { join, dirname } from "path";
 import { randomBytes, createHash } from "crypto";
 
-const SKILL_DIR = join(import.meta.dir, "..");
+const SKILL_DIR = join(import.meta.dir, "../..");
 const TOKEN_PATH = join(SKILL_DIR, "data", "tokens.json");
 const CALLBACK_PORT = 3456;
 const REDIRECT_URI = `http://localhost:${CALLBACK_PORT}/callback`;
@@ -30,18 +30,8 @@ interface StoredTokens {
 function getClientId(): string {
   if (process.env.X_CLIENT_ID) return process.env.X_CLIENT_ID;
 
-  // Try global.env
-  try {
-    const envFile = readFileSync(
-      `${process.env.HOME}/.config/env/global.env`,
-      "utf-8"
-    );
-    const match = envFile.match(/X_CLIENT_ID=["']?([^"'\n]+)/);
-    if (match) return match[1];
-  } catch {}
-
   throw new Error(
-    "X_CLIENT_ID not found. Set it in env or ~/.config/env/global.env\n" +
+    "X_CLIENT_ID not found. Set it as an environment variable.\n" +
     "Get it from https://developer.x.com/en/portal/dashboard"
   );
 }
@@ -67,6 +57,7 @@ function loadTokens(): StoredTokens | null {
 }
 
 function saveTokens(tokens: StoredTokens): void {
+  mkdirSync(dirname(TOKEN_PATH), { recursive: true });
   writeFileSync(TOKEN_PATH, JSON.stringify(tokens, null, 2));
 }
 
